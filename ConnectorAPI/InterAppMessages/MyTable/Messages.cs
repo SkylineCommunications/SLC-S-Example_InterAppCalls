@@ -1,10 +1,12 @@
-﻿namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleConnectorInterAppCalls.Messages.Example
+﻿// Ignore Spelling: App
+
+namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.Messages.MyTable
 {
     using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
 
     public class SimpleCreateExampleRow : Message
     {
-        public ExampleData ExampleData { get; set; }
+        public MyTableData ExampleData { get; set; }
     }
 
     public class SimpleCreateExampleRowResult : Message
@@ -20,7 +22,7 @@
 
     public class AdvancedCreateExampleRow : Message
     {
-        public ExampleData ExampleData { get; set; }
+        public MyTableData ExampleData { get; set; }
     }
 
     public class AdvancedCreateExampleRowResult : Message
@@ -36,7 +38,7 @@
 
 	public class DelayedCreateExampleRow : Message
 	{
-		public ExampleData ExampleData { get; set; }
+		public MyTableData ExampleData { get; set; }
 	}
 
 	public class DelayedCreateExampleRowResult : Message

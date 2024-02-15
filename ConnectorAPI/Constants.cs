@@ -1,4 +1,6 @@
-﻿namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleConnectorInterAppCalls
+﻿// Ignore Spelling: App
+
+namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls
 {
 	/// <summary>
 	/// Contains constant values used in the ConnectorAPI.
@@ -8,7 +10,7 @@
 		/// <summary>
 		/// The protocol name of the Skyline Communications Example Connector InterApp Calls.
 		/// </summary>
-		public const string ProtocolName = "Skyline Communications Example Connector InterApp Calls";
+		public const string ProtocolName = "Skyline Communications Example InterApp Calls";
 
 		/// <summary>
 		/// The ID of the parameter that will receive the InterApp Messages

@@ -1,8 +1,9 @@
-﻿namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleConnectorInterAppCalls
+﻿// Ignore Spelling: App
+
+namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls
 {
 	using System;
 	using System.Collections.Generic;
-    using Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleConnectorInterAppCalls.Tables.Example;
     using Skyline.DataMiner.Core.DataMinerSystem.Common;
 	using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
 	using Skyline.DataMiner.Net;
@@ -10,7 +11,7 @@
 	/// <summary>
 	/// Defines an Example Connector InterApp Calls element.
 	/// </summary>
-	public interface IExampleConnectorInterAppCalls
+	public interface IInterAppElement
 	{
 		/// <summary>
 		/// DataMiner Element Interface.
@@ -23,21 +24,6 @@
 		IConnection SLNetConnection { get; set; }
 
 		/// <summary>
-		/// The rows of the Example Table.
-		/// </summary>
-		IEnumerable<IExampleRow> Examples { get; }
-
-		/// <summary>
-		/// Enable caching for the tables, this way it fetch the table once the first time you access it..
-		/// </summary>
-		void DisableCaching();
-
-		/// <summary>
-		/// Disables caching for the tables, this way it fetches the table every time you access it.
-		/// </summary>
-		void EnableCaching();
-
-		/// <summary>
 		/// Sends the specified messages to the element using InterApp and do not wait for a response.
 		/// </summary>
 		/// <param name="messages">The messages that need to be send.</param>
@@ -48,7 +34,7 @@
 		/// </summary>
 		/// <param name="messages">The messages that need to be send.</param>
 		/// <param name="timeout">The time the method needs to wait for a response.</param>
-		/// <returns></returns>
+		/// <returns>The response coming from the device</returns>
 		IEnumerable<Message> SendMessages(Message[] messages, TimeSpan timeout = default);
 
 		/// <summary>
@@ -56,7 +42,7 @@
 		/// </summary>
 		/// <param name="message">The message that needs to be send.</param>
 		/// <param name="timeout">The time the method needs to wait for a response.</param>
-		/// <returns></returns>
+		/// <returns>The response coming from the device</returns>
 		Message SendSingleResponseMessage(Message message, TimeSpan timeout = default);
 	}
 }
