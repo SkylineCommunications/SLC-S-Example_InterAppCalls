@@ -27,7 +27,7 @@
 		/// <exception cref="ArgumentException"></exception>
 		internal ExampleConnectorInterAppCalls(IConnection connection, IDmsElement element)
 		{
-			if (Element == null)
+			if (element == null)
 			{
 				throw new ArgumentNullException(nameof(element));
 			}

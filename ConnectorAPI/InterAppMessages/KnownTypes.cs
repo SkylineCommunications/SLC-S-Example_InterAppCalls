@@ -6,16 +6,18 @@
 
     public class Types
     {
-        /// <summary>
-        /// Gets a list of all the supported InterApp Message Types.
-        /// </summary>
-        public static List<Type> KnownTypes { get; } = new List<Type>
-        {
+		/// <summary>
+		/// Gets a list of all the supported InterApp Message Types.
+		/// </summary>
+		public static List<Type> KnownTypes { get; } = new List<Type>
+		{
 			// Example Messages
 			typeof(SimpleCreateExampleRow),
-            typeof(SimpleCreateExampleRowResult),
-            typeof(AdvancedCreateExampleRow),
-            typeof(AdvancedCreateExampleRowResult),
-        };
-    }
+			typeof(SimpleCreateExampleRowResult),
+			typeof(AdvancedCreateExampleRow),
+			typeof(AdvancedCreateExampleRowResult),
+			typeof(DelayedCreateExampleRow),
+			typeof(DelayedCreateExampleRowResult),
+		};
+	}
 }

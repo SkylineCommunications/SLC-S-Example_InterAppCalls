@@ -33,4 +33,20 @@
 
         public string RowKey { get; set; }
     }
+
+	public class DelayedCreateExampleRow : Message
+	{
+		public ExampleData ExampleData { get; set; }
+	}
+
+	public class DelayedCreateExampleRowResult : Message
+	{
+		public bool Success { get; set; }
+
+		public string Description { get; set; }
+
+		public DelayedCreateExampleRow Request { get; set; }
+
+		public string RowKey { get; set; }
+	}
 }
