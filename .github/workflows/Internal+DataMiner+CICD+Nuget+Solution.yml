@@ -21,4 +21,4 @@ jobs:
       sonarCloudProjectName: SkylineCommunications_SLC-S-Example_InterAppCalls
     secrets:
       sonarCloudToken: ${{ secrets.SONAR_TOKEN }}
-      nugetApiKey: ${{ secrets.NUGETAPIKEY  }}
+      nugetApiKey: ${{ secrets.NUGETAPIKEY_GITHUB  }}
