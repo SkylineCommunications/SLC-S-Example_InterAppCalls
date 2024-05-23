@@ -6,42 +6,20 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	using System.Collections.Generic;
 	using System.Linq;
 
-	using Skyline.DataMiner.Core.DataMinerSystem.Common;
 	using Skyline.DataMiner.Core.InterAppCalls.Common.CallBulk;
 	using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
 	using Skyline.DataMiner.Core.InterAppCalls.Common.Shared;
 	using Skyline.DataMiner.Net;
+	using Skyline.DataMiner.Net.Messages;
 
 	/// <summary>
 	/// Represents a DataMiner element using the 'Skyline Example InterAppCalls' connector, that can handle InterApp Messages.
 	/// </summary>
-	public class ExampleInterAppCalls : IInterAppElement
+	public class ExampleInterAppCalls
 	{
 		private TimeSpan defaultTimeout = TimeSpan.FromSeconds(60);
 
 		#region Constructors
-		/// <summary>
-		/// Initialize a new instance of the <see cref="ExampleInterAppCalls"/> class.
-		/// </summary>
-		/// <param name="connection">The connection interface.</param>
-		/// <param name="element">The element in DataMiner.</param>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentException"></exception>
-		public ExampleInterAppCalls(IConnection connection, IDmsElement element)
-		{
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			if (element.Protocol.Name != Constants.ProtocolName)
-			{
-				throw new ArgumentException($"The element is not running protocol '{Constants.ProtocolName}'", nameof(element));
-			}
-
-			Element = element;
-			SLNetConnection = connection ?? throw new ArgumentNullException(nameof(connection));
-		}
 
 		/// <summary>
 		/// Initialize a new instance of the <see cref="ExampleInterAppCalls"/> class.
@@ -52,51 +30,33 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		/// <exception cref="ArgumentException"></exception>
 		public ExampleInterAppCalls(IConnection connection, string elementName)
 		{
-			if (elementName == null)
+			if (String.IsNullOrEmpty(elementName))
 			{
-				throw new ArgumentNullException(nameof(elementName));
+				throw new ArgumentException("Please provide a valid Element name.", nameof(elementName));
 			}
 
-			Element = connection.GetDms().GetElement(elementName);
-			if (Element == null)
+			SLNetConnection = connection ?? throw new ArgumentNullException(nameof(connection));
+
+			ElementInfoEventMessage elementInfo;
+			try
 			{
-				throw new ArgumentException($"The element with name '{elementName}', could not be found.", nameof(elementName));
+				elementInfo = (ElementInfoEventMessage)SLNetConnection.HandleSingleResponseMessage(new GetElementByNameMessage
+				{
+					ElementName = elementName,
+				});
+			}
+			catch (Exception)
+			{
+				throw new ArgumentException($"The element does not exists with name '{elementName}'", nameof(elementName));
 			}
 
-			if (Element.Protocol.Name != Constants.ProtocolName)
+			if (elementInfo.Protocol != Constants.ProtocolName)
 			{
 				throw new ArgumentException($"The element is not running protocol '{Constants.ProtocolName}'", nameof(elementName));
 			}
 
-			SLNetConnection = connection ?? throw new ArgumentNullException(nameof(connection));
-		}
-
-		/// <summary>
-		/// Initialize a new instance of the <see cref="ExampleInterAppCalls"/> class.
-		/// </summary>
-		/// <param name="connection">The connection interface.</param>
-		/// <param name="elementId">The element id in DataMiner.</param>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentException"></exception>
-		public ExampleInterAppCalls(IConnection connection, DmsElementId elementId)
-		{
-			if (elementId == default)
-			{
-				throw new ArgumentNullException(nameof(elementId));
-			}
-
-			Element = connection.GetDms().GetElement(elementId);
-			if (Element == null)
-			{
-				throw new ArgumentException($"The element with name '{elementId}', could not be found.", nameof(elementId));
-			}
-
-			if (Element.Protocol.Name != Constants.ProtocolName)
-			{
-				throw new ArgumentException($"The element is not running protocol '{Constants.ProtocolName}'", nameof(elementId));
-			}
-
-			SLNetConnection = connection ?? throw new ArgumentNullException(nameof(connection));
+			AgentId = elementInfo.DataMinerID;
+			ElementId = elementInfo.ElementID;
 		}
 
 		/// <summary>
@@ -107,25 +67,66 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		/// <param name="elementId">The id of the element in DataMiner.</param>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
-		public ExampleInterAppCalls(IConnection connection, int dmaId, int elementId) : this(connection, new DmsElementId(dmaId, elementId))
+		public ExampleInterAppCalls(IConnection connection, int dmaId, int elementId)
 		{
+			if (dmaId == default)
+			{
+				throw new ArgumentException("Please provide a valid DMA ID.", nameof(dmaId));
+			}
+
+			if (elementId == default)
+			{
+				throw new ArgumentException("Please provide a valid Element ID.", nameof(elementId));
+			}
+
+			SLNetConnection = connection ?? throw new ArgumentNullException(nameof(connection));
+			AgentId = dmaId;
+			ElementId = elementId;
+
+			ElementInfoEventMessage elementInfo;
+			try
+			{
+				elementInfo = (ElementInfoEventMessage)SLNetConnection.HandleSingleResponseMessage(new GetElementByIDMessage
+				{
+					DataMinerID = dmaId,
+					ElementID = elementId,
+				});
+			}
+			catch
+			{
+				throw new ArgumentException($"The element does not exists with id '{dmaId}/{elementId}'", nameof(elementId));
+			}
+
+			if (elementInfo.Protocol != Constants.ProtocolName)
+			{
+				throw new ArgumentException($"The element is not running protocol '{Constants.ProtocolName}'", nameof(elementId));
+			}
 		}
 		#endregion
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The SLNet Connection to use.
+		/// </summary>
 		public IConnection SLNetConnection { get; set; }
 
-		/// <inheritdoc/>
-		public IDmsElement Element { get; private set; }
+		/// <summary>
+		/// The id of the DataMiner that is hosting the element.
+		/// </summary>
+		int AgentId { get; }
+
+		/// <summary>
+		/// The id of the element in DataMiner.
+		/// </summary>
+		int ElementId { get; }
 
 		/// <inheritdoc/>
 		public void SendMessageNoResponse(params Message[] messages)
 		{
 
 			IInterAppCall myCommands = InterAppCallFactory.CreateNew();
-			myCommands.ReturnAddress = new ReturnAddress(Element.DmsElementId.AgentId, Element.DmsElementId.ElementId, Constants.InterAppResponsePID);
+			myCommands.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
 			myCommands.Messages.AddMessage(messages);
-			myCommands.Send(SLNetConnection, Element.DmsElementId.AgentId, Element.DmsElementId.ElementId, Constants.InterAppReceiverPID, Messages.Types.KnownTypes);
+			myCommands.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, Messages.Types.KnownTypes);
 		}
 
 		/// <inheritdoc/>
@@ -138,9 +139,9 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 			}
 
 			IInterAppCall myCommands = InterAppCallFactory.CreateNew();
-			myCommands.ReturnAddress = new ReturnAddress(Element.DmsElementId.AgentId, Element.DmsElementId.ElementId, Constants.InterAppResponsePID);
+			myCommands.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
 			myCommands.Messages.AddMessage(messages);
-			return myCommands.Send(SLNetConnection, Element.DmsElementId.AgentId, Element.DmsElementId.ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes);
+			return myCommands.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes);
 		}
 
 		/// <inheritdoc/>
@@ -153,9 +154,9 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 			}
 
 			IInterAppCall myCommand = InterAppCallFactory.CreateNew();
-			myCommand.ReturnAddress = new ReturnAddress(Element.DmsElementId.AgentId, Element.DmsElementId.ElementId, Constants.InterAppResponsePID);
+			myCommand.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
 			myCommand.Messages.AddMessage(message);
-			return myCommand.Send(SLNetConnection, Element.DmsElementId.AgentId, Element.DmsElementId.ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes).First();
+			return myCommand.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes).First();
 		}
 	}
 }

@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net462</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 		<AssemblyName>Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls</AssemblyName>
 		<RootNamespace>Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls</RootNamespace>
-		<PackageVersion>1.0.1-pre1</PackageVersion>
-		<Version>1.0.1-pre1</Version>
+		<PackageVersion>1.0.3-InterApp1.0.3</PackageVersion>
+		<Version>1.0.3-InterApp1.0.3</Version>
 		<PackageTags>Skyline;DataMiner</PackageTags>
 		<PackageProjectUrl>https://skyline.be</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -28,6 +28,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Skyline.DataMiner.Core.InterAppCalls.Common" Version="1.0.0.3" />
+	  <PackageReference Include="Skyline.DataMiner.Core.InterAppCalls.Common" Version="1.0.1.1" />
 	</ItemGroup>
 </Project>
