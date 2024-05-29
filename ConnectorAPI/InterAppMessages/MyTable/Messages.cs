@@ -3,7 +3,6 @@
 namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.Messages.MyTable
 {
 	using Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.InterAppMessages;
-	using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
 
     /// <summary>
     /// InterApp Message that will execute the simple example flow.

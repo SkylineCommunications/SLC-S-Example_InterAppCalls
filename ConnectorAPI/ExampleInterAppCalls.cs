@@ -116,7 +116,6 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		/// <inheritdoc/>
 		public void SendMessageNoResponse(params IExampleRequest[] messages)
 		{
-
 			IInterAppCall myCommands = InterAppCallFactory.CreateNew();
 			myCommands.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
 			myCommands.Messages.AddMessage(messages.Select(Messages.Types.ToMessage).ToArray());
