@@ -6,8 +6,8 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	using System.Collections.Generic;
 	using System.Linq;
 
+	using Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.InterAppMessages;
 	using Skyline.DataMiner.Core.InterAppCalls.Common.CallBulk;
-	using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
 	using Skyline.DataMiner.Core.InterAppCalls.Common.Shared;
 	using Skyline.DataMiner.Net;
 	using Skyline.DataMiner.Net.Messages;
@@ -15,7 +15,7 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	/// <summary>
 	/// Represents a DataMiner element using the 'Skyline Example InterAppCalls' connector, that can handle InterApp Messages.
 	/// </summary>
-	public class ExampleInterAppCalls
+	public class ExampleInterAppCalls : IExampleInterAppCalls
 	{
 		private TimeSpan defaultTimeout = TimeSpan.FromSeconds(60);
 
@@ -104,33 +104,27 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		}
 		#endregion
 
-		/// <summary>
-		/// The SLNet Connection to use.
-		/// </summary>
+		/// <inheritdoc/>
 		public IConnection SLNetConnection { get; set; }
 
-		/// <summary>
-		/// The id of the DataMiner that is hosting the element.
-		/// </summary>
-		int AgentId { get; }
-
-		/// <summary>
-		/// The id of the element in DataMiner.
-		/// </summary>
-		int ElementId { get; }
+		/// <inheritdoc/>
+		public int AgentId { get; }
 
 		/// <inheritdoc/>
-		public void SendMessageNoResponse(params Message[] messages)
+		public int ElementId { get; }
+
+		/// <inheritdoc/>
+		public void SendMessageNoResponse(params IExampleRequest[] messages)
 		{
 
 			IInterAppCall myCommands = InterAppCallFactory.CreateNew();
 			myCommands.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
-			myCommands.Messages.AddMessage(messages);
+			myCommands.Messages.AddMessage(messages.Select(Messages.Types.ToMessage).ToArray());
 			myCommands.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, Messages.Types.KnownTypes);
 		}
 
 		/// <inheritdoc/>
-		public IEnumerable<Message> SendMessages(Message[] messages, TimeSpan timeout = default)
+		public IEnumerable<IExampleResponse> SendMessages(IExampleRequest[] messages, TimeSpan timeout = default)
 		{
 			var interAppCallTimeout = timeout;
 			if (timeout == default)
@@ -140,12 +134,13 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 
 			IInterAppCall myCommands = InterAppCallFactory.CreateNew();
 			myCommands.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
-			myCommands.Messages.AddMessage(messages);
-			return myCommands.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes);
+			myCommands.Messages.AddMessage(messages.Select(Messages.Types.ToMessage).ToArray());
+			var internalResults = myCommands.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes);
+			return internalResults.Select(result => Messages.Types.FromMessage(result));
 		}
 
 		/// <inheritdoc/>
-		public Message SendSingleResponseMessage(Message message, TimeSpan timeout = default)
+		public IExampleResponse SendSingleResponseMessage(IExampleRequest message, TimeSpan timeout = default)
 		{
 			var interAppCallTimeout = timeout;
 			if (timeout == default)
@@ -155,8 +150,17 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 
 			IInterAppCall myCommand = InterAppCallFactory.CreateNew();
 			myCommand.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
-			myCommand.Messages.AddMessage(message);
-			return myCommand.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes).First();
+			myCommand.Messages.AddMessage(Messages.Types.ToMessage(message));
+			var internalResult = myCommand.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes).First();
+			return Messages.Types.FromMessage(internalResult);
+		}
+
+		/// <inheritdoc/>
+		public T SendSingleResponseMessage<T>(IExampleRequest message, TimeSpan timeout = default)
+			where T : IExampleResponse
+		{
+			var result = SendSingleResponseMessage(message, timeout);
+			return (T)result;
 		}
 	}
 }

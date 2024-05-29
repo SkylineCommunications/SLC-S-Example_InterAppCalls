@@ -2,12 +2,13 @@
 
 namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.Messages.MyTable
 {
-    using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
+	using Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.InterAppMessages;
+	using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
 
     /// <summary>
     /// InterApp Message that will execute the simple example flow.
     /// </summary>
-    public class SimpleCreateExampleRow : Message
+    public class SimpleCreateExampleRow : IExampleRequest
     {
 		/// <summary>
 		/// The data needed to execute the simple example flow.
@@ -18,7 +19,7 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	/// <summary>
 	/// InterApp Message that represent the response from the simple example flow.
 	/// </summary>
-	public class SimpleCreateExampleRowResult : Message
+	public class SimpleCreateExampleRowResult : IExampleResponse
     {
 		/// <summary>
 		/// Indicates if the InterApp Call was successful or not
@@ -33,7 +34,7 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		/// <summary>
 		/// The InterApp Message that triggered this response.
 		/// </summary>
-        public SimpleCreateExampleRow Request { get; set; }
+        public IExampleRequest Request { get; set; }
 
 		/// <summary>
 		/// The primary key of the row that will be created.
@@ -44,8 +45,8 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	/// <summary>
 	/// InterApp Message that will execute the advanced example flow.
 	/// </summary>
-	public class AdvancedCreateExampleRow : Message
-    {
+	public class AdvancedCreateExampleRow : IExampleRequest
+	{
 		/// <summary>
 		/// The data needed to execute the advanced example flow.
 		/// </summary>
@@ -55,8 +56,8 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	/// <summary>
 	/// InterApp Message that represent the response from the advanced example flow.
 	/// </summary>
-	public class AdvancedCreateExampleRowResult : Message
-    {
+	public class AdvancedCreateExampleRowResult : IExampleResponse
+	{
 		/// <summary>
 		/// Indicates if the InterApp Call was successful or not
 		/// </summary>
@@ -70,7 +71,7 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		/// <summary>
 		/// The InterApp Message that triggered this response.
 		/// </summary>
-		public AdvancedCreateExampleRow Request { get; set; }
+		public IExampleRequest Request { get; set; }
 
 		/// <summary>
 		/// The primary key of the row that will be created.
@@ -81,7 +82,7 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	/// <summary>
 	/// InterApp Message that will execute the delayed example flow.
 	/// </summary>
-	public class DelayedCreateExampleRow : Message
+	public class DelayedCreateExampleRow : IExampleRequest
 	{
 		/// <summary>
 		/// The data needed to execute the delayed example flow.
@@ -92,7 +93,7 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	/// <summary>
 	/// InterApp Message that represent the response from the delayed example flow.
 	/// </summary>
-	public class DelayedCreateExampleRowResult : Message
+	public class DelayedCreateExampleRowResult : IExampleResponse
 	{
 		/// <summary>
 		/// Indicates if the InterApp Call was successful or not
@@ -107,7 +108,7 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		/// <summary>
 		/// The InterApp Message that triggered this response.
 		/// </summary>
-		public DelayedCreateExampleRow Request { get; set; }
+		public IExampleRequest Request { get; set; }
 
 		/// <summary>
 		/// The primary key of the created row.
