@@ -5,7 +5,7 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
 
 	/// <summary>
-	/// Represents an InterApp Message that a GitHub Repositories element can receive.
+	/// Represents an InterApp Message that a Skyline Communications Example InterApp Calls element can receive.
 	/// </summary>
 	public interface IExampleInterAppMessage
 	{
