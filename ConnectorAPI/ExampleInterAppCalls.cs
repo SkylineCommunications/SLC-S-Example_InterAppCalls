@@ -117,8 +117,10 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		public void SendMessageNoResponse(params IExampleRequest[] messages)
 		{
 			IInterAppCall myCommands = InterAppCallFactory.CreateNew();
+
 			myCommands.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
 			myCommands.Messages.AddMessage(messages.Select(Messages.Types.ToMessage).ToArray());
+
 			myCommands.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, Messages.Types.KnownTypes);
 		}
 
@@ -132,8 +134,10 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 			}
 
 			IInterAppCall myCommands = InterAppCallFactory.CreateNew();
+
 			myCommands.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
 			myCommands.Messages.AddMessage(messages.Select(Messages.Types.ToMessage).ToArray());
+
 			var internalResults = myCommands.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes);
 			return internalResults.Select(result => Messages.Types.FromMessage(result));
 		}
@@ -148,8 +152,10 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 			}
 
 			IInterAppCall myCommand = InterAppCallFactory.CreateNew();
+
 			myCommand.ReturnAddress = new ReturnAddress(AgentId, ElementId, Constants.InterAppResponsePID);
 			myCommand.Messages.AddMessage(Messages.Types.ToMessage(message));
+
 			var internalResult = myCommand.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, interAppCallTimeout, Messages.Types.KnownTypes).First();
 			return Messages.Types.FromMessage(internalResult);
 		}
