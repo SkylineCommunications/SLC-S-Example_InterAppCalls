@@ -15,3 +15,5 @@ _git2_*
 **/*.csproj.user
 # resharper solution user settings
 *sln.DotSettings.user
+
+Directory.Build.props.user

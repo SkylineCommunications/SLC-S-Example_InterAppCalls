@@ -1,31 +1,45 @@
 ﻿// Ignore Spelling: App
 
-namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.Messages
+namespace Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls.Messages
 {
-    using System;
-    using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
 
-	using Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.InterAppMessages;
-	using Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.Messages.MyTable;
+	using Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls.InterAppMessages;
+	using Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls.InterAppMessages.GenericDataMiner;
+	using Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls.InterAppMessages.GenericDataSource;
 	using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
 
 	/// <summary>
-	/// Static class holding the types of the InterApp Messages.
+	/// Provides the message types supported by the example connector and converts
+	/// between public API messages and InterApp library messages.
 	/// </summary>
 	public static class Types
-    {
+	{
 		/// <summary>
 		/// Gets a list of all the supported InterApp Message Types.
 		/// </summary>
 		public static List<Type> KnownTypes { get; } = new List<Type>
 		{
-			// Example Messages
-			typeof(GenericInterAppMessage<SimpleCreateExampleRow>),
-			typeof(GenericInterAppMessage<SimpleCreateExampleRowResult>),
-			typeof(GenericInterAppMessage<AdvancedCreateExampleRow>),
-			typeof(GenericInterAppMessage<AdvancedCreateExampleRowResult>),
-			typeof(GenericInterAppMessage<DelayedCreateExampleRow>),
-			typeof(GenericInterAppMessage<DelayedCreateExampleRowResult>),
+			// Generic DataMiner Messages
+			typeof(GenericInterAppMessage<DataMinerStringConfigRequest>),
+			typeof(GenericInterAppMessage<DataMinerStringConfigResponse>),
+			typeof(GenericInterAppMessage<DataMinerDiscreetConfigRequest>),
+			typeof(GenericInterAppMessage<DataMinerDiscreetConfigResponse>),
+			typeof(GenericInterAppMessage<DataMinerNumberConfigRequest>),
+			typeof(GenericInterAppMessage<DataMinerNumberConfigResponse>),
+			typeof(GenericInterAppMessage<DataMinerBooleanConfigRequest>),
+			typeof(GenericInterAppMessage<DataMinerBooleanConfigResponse>),
+
+			// Generic DataSource Messages
+			typeof(GenericInterAppMessage<DataSourceStringConfigRequest>),
+			typeof(GenericInterAppMessage<DataSourceStringConfigResponse>),
+			typeof(GenericInterAppMessage<DataSourceDiscreetConfigRequest>),
+			typeof(GenericInterAppMessage<DataSourceDiscreetConfigResponse>),
+			typeof(GenericInterAppMessage<DataSourceNumberConfigRequest>),
+			typeof(GenericInterAppMessage<DataSourceNumberConfigResponse>),
+			typeof(GenericInterAppMessage<DataSourceBooleanConfigRequest>),
+			typeof(GenericInterAppMessage<DataSourceBooleanConfigResponse>),
 		};
 
 		/// <summary>
@@ -38,20 +52,18 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		/// <exception cref="InvalidOperationException">Thrown when the message type is unknown.</exception>
 		internal static Message ToMessage(IExampleRequest message)
 		{
-			switch (message)
+			return message switch
 			{
-				case SimpleCreateExampleRow simpleCreateExampleRow:
-					return new GenericInterAppMessage<SimpleCreateExampleRow>(simpleCreateExampleRow);
-
-				case AdvancedCreateExampleRow advancedCreateExampleRow:
-					return new GenericInterAppMessage<AdvancedCreateExampleRow>(advancedCreateExampleRow);
-
-				case DelayedCreateExampleRow delayedCreateExampleRow:
-					return new GenericInterAppMessage<DelayedCreateExampleRow>(delayedCreateExampleRow);
-
-				default:
-					throw new InvalidOperationException("Unknown message type");
-			}
+				DataMinerStringConfigRequest genericDataMinerStringConfig => new GenericInterAppMessage<DataMinerStringConfigRequest>(genericDataMinerStringConfig),
+				DataMinerDiscreetConfigRequest genericDataMinerDiscreetConfig => new GenericInterAppMessage<DataMinerDiscreetConfigRequest>(genericDataMinerDiscreetConfig),
+				DataMinerNumberConfigRequest genericDataMinerNumberConfig => new GenericInterAppMessage<DataMinerNumberConfigRequest>(genericDataMinerNumberConfig),
+				DataMinerBooleanConfigRequest genericDataMinerBooleanConfig => new GenericInterAppMessage<DataMinerBooleanConfigRequest>(genericDataMinerBooleanConfig),
+				DataSourceStringConfigRequest genericDataSourceStringConfig => new GenericInterAppMessage<DataSourceStringConfigRequest>(genericDataSourceStringConfig),
+				DataSourceDiscreetConfigRequest genericDataSourceDiscreetConfig => new GenericInterAppMessage<DataSourceDiscreetConfigRequest>(genericDataSourceDiscreetConfig),
+				DataSourceNumberConfigRequest genericDataSourceNumberConfig => new GenericInterAppMessage<DataSourceNumberConfigRequest>(genericDataSourceNumberConfig),
+				DataSourceBooleanConfigRequest genericDataSourceBooleanConfig => new GenericInterAppMessage<DataSourceBooleanConfigRequest>(genericDataSourceBooleanConfig),
+				_ => throw new InvalidOperationException("Unknown message type")
+			};
 		}
 
 		/// <summary>
@@ -64,20 +76,18 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		/// <exception cref="InvalidOperationException">Thrown when the message type is unknown.</exception>
 		internal static IExampleResponse FromMessage(Message message)
 		{
-			switch (message)
+			return message switch
 			{
-				case GenericInterAppMessage<SimpleCreateExampleRowResult> simpleCreateExampleRowResult:
-					return simpleCreateExampleRowResult.Data;
-
-				case GenericInterAppMessage<AdvancedCreateExampleRowResult> advancedCreateExampleRowResult:
-					return advancedCreateExampleRowResult.Data;
-
-				case GenericInterAppMessage<DelayedCreateExampleRowResult> delayedCreateExampleRowResult:
-					return delayedCreateExampleRowResult.Data;
-
-				default:
-					throw new InvalidOperationException("Unknown message type");
-			}
+				GenericInterAppMessage<DataMinerStringConfigResponse> genericDataMinerStringConfigResult => genericDataMinerStringConfigResult.Data,
+				GenericInterAppMessage<DataMinerDiscreetConfigResponse> genericDataMinerDiscreetConfigResult => genericDataMinerDiscreetConfigResult.Data,
+				GenericInterAppMessage<DataMinerNumberConfigResponse> genericDataMinerNumberConfigResult => genericDataMinerNumberConfigResult.Data,
+				GenericInterAppMessage<DataMinerBooleanConfigResponse> genericDataMinerBooleanConfigResult => genericDataMinerBooleanConfigResult.Data,
+				GenericInterAppMessage<DataSourceStringConfigResponse> genericDataSourceStringConfigResult => genericDataSourceStringConfigResult.Data,
+				GenericInterAppMessage<DataSourceDiscreetConfigResponse> genericDataSourceDiscreetConfigResult => genericDataSourceDiscreetConfigResult.Data,
+				GenericInterAppMessage<DataSourceNumberConfigResponse> genericDataSourceNumberConfigResult => genericDataSourceNumberConfigResult.Data,
+				GenericInterAppMessage<DataSourceBooleanConfigResponse> genericDataSourceBooleanConfigResult => genericDataSourceBooleanConfigResult.Data,
+				_ => throw new InvalidOperationException("Unknown message type"),
+			};
 		}
 	}
 }

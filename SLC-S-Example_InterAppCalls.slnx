@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/" />
+  <Folder Name="/Solution Items/.github/workflows/">
+    <File Path=".github/workflows/DataMiner+CICD+Nuget+Solution.yml" />
+    <File Path=".github/workflows/Internal+DataMiner+CICD+Nuget+Solution.yml" />
+  </Folder>
+  <Project Path="ConnectorAPI/ConnectorAPI.csproj" />
+</Solution>

@@ -1,19 +1,20 @@
 ﻿// Ignore Spelling: App dma
 
-namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls
+namespace Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
-	using Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.InterAppMessages;
+	using Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls.InterAppMessages;
 	using Skyline.DataMiner.Core.InterAppCalls.Common.CallBulk;
 	using Skyline.DataMiner.Core.InterAppCalls.Common.Shared;
 	using Skyline.DataMiner.Net;
 	using Skyline.DataMiner.Net.Messages;
 
 	/// <summary>
-	/// Represents a DataMiner element using the 'Skyline Example InterAppCalls' connector, that can handle InterApp Messages.
+	/// Provides a typed wrapper for sending inter-application messages to an element
+	/// running the example connector.
 	/// </summary>
 	public class ExampleInterAppCalls : IExampleInterAppCalls
 	{
@@ -22,12 +23,13 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		#region Constructors
 
 		/// <summary>
-		/// Initialize a new instance of the <see cref="ExampleInterAppCalls"/> class.
+		/// Initializes a new instance of the <see cref="ExampleInterAppCalls"/> class
+		/// by resolving an element by name.
 		/// </summary>
 		/// <param name="connection">The connection interface.</param>
-		/// <param name="elementName">The name of the element in DataMiner.</param>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="elementName">The name of the target element in DataMiner.</param>
+		/// <exception cref="ArgumentNullException">Thrown when <paramref name="connection"/> is <see langword="null"/>.</exception>
+		/// <exception cref="ArgumentException">Thrown when <paramref name="elementName"/> is empty, the element cannot be found, or the element does not use the example connector.</exception>
 		public ExampleInterAppCalls(IConnection connection, string elementName)
 		{
 			if (String.IsNullOrEmpty(elementName))
@@ -60,13 +62,14 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		}
 
 		/// <summary>
-		/// Initialize a new instance of the <see cref="ExampleInterAppCalls"/> class.
+		/// Initializes a new instance of the <see cref="ExampleInterAppCalls"/> class
+		/// by identifying the target element by DataMiner Agent and element identifiers.
 		/// </summary>
 		/// <param name="connection">The connection interface.</param>
-		/// <param name="dmaId">The id of the DataMiner that is hosting the element.</param>
-		/// <param name="elementId">The id of the element in DataMiner.</param>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="dmaId">The identifier of the DataMiner Agent hosting the element.</param>
+		/// <param name="elementId">The identifier of the element in DataMiner.</param>
+		/// <exception cref="ArgumentNullException">Thrown when <paramref name="connection"/> is <see langword="null"/>.</exception>
+		/// <exception cref="ArgumentException">Thrown when either identifier is zero, the element cannot be found, or the element does not use the example connector.</exception>
 		public ExampleInterAppCalls(IConnection connection, int dmaId, int elementId)
 		{
 			if (dmaId == default)
@@ -104,16 +107,25 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 		}
 		#endregion
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Gets or sets the SLNet connection used to send inter-application calls.
+		/// </summary>
 		public IConnection SLNetConnection { get; set; }
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Gets the identifier of the DataMiner Agent hosting the target element.
+		/// </summary>
 		public int AgentId { get; }
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Gets the identifier of the target element in DataMiner.
+		/// </summary>
 		public int ElementId { get; }
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Sends the specified messages to the target element without waiting for responses.
+		/// </summary>
+		/// <param name="messages">The messages to send.</param>
 		public void SendMessageNoResponse(params IExampleRequest[] messages)
 		{
 			IInterAppCall myCommands = InterAppCallFactory.CreateNew();
@@ -124,7 +136,12 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 			myCommands.Send(SLNetConnection, AgentId, ElementId, Constants.InterAppReceiverPID, Messages.Types.KnownTypes);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Sends the specified messages to the target element and waits for the responses.
+		/// </summary>
+		/// <param name="messages">The messages to send.</param>
+		/// <param name="timeout">The maximum time to wait for responses. The implementation default is used when this is <see cref="TimeSpan.Zero"/>.</param>
+		/// <returns>The responses returned by the target element.</returns>
 		public IEnumerable<IExampleResponse> SendMessages(IExampleRequest[] messages, TimeSpan timeout = default)
 		{
 			var interAppCallTimeout = timeout;
@@ -142,7 +159,12 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 			return internalResults.Select(result => Messages.Types.FromMessage(result));
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Sends a message to the target element and waits for its response.
+		/// </summary>
+		/// <param name="message">The message to send.</param>
+		/// <param name="timeout">The maximum time to wait for a response. The implementation default is used when this is <see cref="TimeSpan.Zero"/>.</param>
+		/// <returns>The response returned by the target element.</returns>
 		public IExampleResponse SendSingleResponseMessage(IExampleRequest message, TimeSpan timeout = default)
 		{
 			var interAppCallTimeout = timeout;
@@ -160,7 +182,13 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 			return Messages.Types.FromMessage(internalResult);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Sends a message to the target element and returns its response as the requested type.
+		/// </summary>
+		/// <typeparam name="T">The type of the expected response, which must implement <see cref="IExampleResponse"/>.</typeparam>
+		/// <param name="message">The message to send.</param>
+		/// <param name="timeout">The maximum time to wait for a response. The implementation default is used when this is <see cref="TimeSpan.Zero"/>.</param>
+		/// <returns>The response returned by the target element.</returns>
 		public T SendSingleResponseMessage<T>(IExampleRequest message, TimeSpan timeout = default)
 			where T : IExampleResponse
 		{
