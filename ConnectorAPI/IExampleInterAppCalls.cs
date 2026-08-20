@@ -1,11 +1,11 @@
 ﻿// Ignore Spelling: App dma
 
-namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls
+namespace Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls
 {
 	using System;
 	using System.Collections.Generic;
 
-	using Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.InterAppMessages;
+	using Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls.InterAppMessages;
 	using Skyline.DataMiner.Net;
 
 	/// <summary>
@@ -14,48 +14,48 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	public interface IExampleInterAppCalls
 	{
 		/// <summary>
-		/// The SLNet Connection to use.
+		/// Gets or sets the SLNet connection used to send inter-application calls.
 		/// </summary>
 		IConnection SLNetConnection { get; set; }
 
 		/// <summary>
-		/// The id of the DataMiner that is hosting the element.
+		/// Gets the identifier of the DataMiner Agent hosting the target element.
 		/// </summary>
 		int AgentId { get; }
 
 		/// <summary>
-		/// The id of the element in DataMiner.
+		/// Gets the identifier of the target element in DataMiner.
 		/// </summary>
 		int ElementId { get; }
 
 		/// <summary>
-		/// Sends the specified messages to the element using InterApp and do not wait for a response.
+		/// Sends the specified messages to the target element without waiting for responses.
 		/// </summary>
 		/// <param name="messages">The messages that need to be send.</param>
 		void SendMessageNoResponse(params IExampleRequest[] messages);
 
 		/// <summary>
-		/// Sends the specified messages to the element using InterApp and wait for the responses.
+		/// Sends the specified messages to the target element and waits for the responses.
 		/// </summary>
-		/// <param name="messages">The messages that need to be send.</param>
-		/// <param name="timeout">The time the method needs to wait for a response.</param>
-		/// <returns>The response coming from the element</returns>
+		/// <param name="messages">The messages to send.</param>
+		/// <param name="timeout">The maximum time to wait for responses. The implementation default is used when this is <see cref="TimeSpan.Zero"/>.</param>
+		/// <returns>The responses returned by the target element.</returns>
 		IEnumerable<IExampleResponse> SendMessages(IExampleRequest[] messages, TimeSpan timeout = default);
 
 		/// <summary>
-		/// Sends the specified message to the element using InterApp and wait for the responses.
+		/// Sends a message to the target element and waits for its response.
 		/// </summary>
-		/// <param name="message">The message that needs to be send.</param>
-		/// <param name="timeout">The time the method needs to wait for a response.</param>
-		/// <returns>The response coming from the element</returns>
+		/// <param name="message">The message to send.</param>
+		/// <param name="timeout">The maximum time to wait for a response. The implementation default is used when this is <see cref="TimeSpan.Zero"/>.</param>
+		/// <returns>The response returned by the target element.</returns>
 		IExampleResponse SendSingleResponseMessage(IExampleRequest message, TimeSpan timeout = default);
 
 		/// <summary>
-		/// Sends the specified message to the element using InterApp and wait for the responses.
+		/// Sends a message to the target element and returns its response as the requested type.
 		/// </summary>
-		/// <param name="message">The message that needs to be send.</param>
-		/// <param name="timeout">The time the method needs to wait for a response.</param>
-		/// <returns>The response coming from the device</returns>
+		/// <param name="message">The message to send.</param>
+		/// <param name="timeout">The maximum time to wait for a response. The implementation default is used when this is <see cref="TimeSpan.Zero"/>.</param>
+		/// <returns>The response returned by the target element.</returns>
 		/// <typeparam name="T">The type of the expected response, which must implement <see cref="IExampleResponse"/>.</typeparam>
 		T SendSingleResponseMessage<T>(IExampleRequest message, TimeSpan timeout = default) where T : IExampleResponse;
 	}

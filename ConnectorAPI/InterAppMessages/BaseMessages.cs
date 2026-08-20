@@ -1,11 +1,11 @@
 ﻿// Ignore Spelling: App
 
-namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls.InterAppMessages
+namespace Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls.InterAppMessages
 {
 	using Skyline.DataMiner.Core.InterAppCalls.Common.CallSingle;
 
 	/// <summary>
-	/// Represents an InterApp Message that a Skyline Communications Example InterApp Calls element can receive.
+	/// Identifies a message exchanged with an element running the example connector.
 	/// </summary>
 	public interface IExampleInterAppMessage
 	{
@@ -34,30 +34,25 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	}
 
 	/// <summary>
-	/// Base class that hold default properties that every request has.
+	/// Identifies a message that can be sent to the example connector.
 	/// </summary>
 	public interface IExampleRequest : IExampleInterAppMessage
 	{
 	}
 
 	/// <summary>
-	/// Base class that hold default properties that every response has.
+	/// Identifies a message returned by the example connector.
 	/// </summary>
 	public interface IExampleResponse : IExampleInterAppMessage
 	{
 		/// <summary>
-		/// Indicates if the InterApp Call was successful or not
+		/// Gets or sets a value indicating whether the inter-application call completed successfully.
 		/// </summary>
 		bool Success { get; set; }
 
 		/// <summary>
-		/// A human readable text representing the response of the InterApp Call.
+		/// Gets or sets a human-readable description of the call result.
 		/// </summary>
 		string Description { get; set; }
-
-		/// <summary>
-		/// The InterApp Message that triggered this response.
-		/// </summary>
-		IExampleRequest Request { get; set; }
 	}
 }

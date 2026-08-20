@@ -1,6 +1,6 @@
 ﻿// Ignore Spelling: App
 
-namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCalls
+namespace Skyline.DataMiner.ConnectorAPI.ExampleInterAppCalls
 {
 	/// <summary>
 	/// Contains constant values used in the ConnectorAPI.
@@ -8,17 +8,17 @@ namespace Skyline.DataMiner.ConnectorAPI.SkylineCommunications.ExampleInterAppCa
 	public static class Constants
 	{
 		/// <summary>
-		/// The protocol name of the Skyline Communications Example Connector InterApp Calls.
+		/// Gets the protocol name of the example connector that accepts the inter-application calls.
 		/// </summary>
-		public const string ProtocolName = "Skyline Communications Example InterApp Calls";
+		public const string ProtocolName = "Skyline Example InterAppCalls";
 
 		/// <summary>
-		/// The ID of the parameter that will receive the InterApp Messages
+		/// Gets the identifier of the parameter that receives inter-application messages.
 		/// </summary>
 		public const int InterAppReceiverPID = 9000000;
 
 		/// <summary>
-		/// The ID of the parameter that will hold the responses for the InterApp Messages
+		/// Gets the identifier of the parameter that carries inter-application responses.
 		/// </summary>
 		public const int InterAppResponsePID = 9000001;
 	}
